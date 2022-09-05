@@ -9,11 +9,11 @@ const port = process.env.PORT || 8080;
 
 //Middle Ware
 const limiter = rateLimit({
-  windowMs: 1000,
+  windowMs: 10000,
   max: 3,
   standardHeaders: true,
   legacyHeaders: false,
-  message: "Rate exceeded",
+  handler: (_req, res) => res.status(429).send("Rate exceeded"),
 });
 
 type RequestQuery = Request<{}, {}, {}, { dob: string }>;
@@ -39,7 +39,7 @@ app.use(limiter).get("/howold", async (req: RequestQuery, res: Response) => {
     return res.status(400).json({ error: "Invalid Date" });
   }
 
-  let age = Math.round(ageMs / (1000 * 60 * 60 * 24 * 365));
+  let age = Math.floor(ageMs / (1000 * 60 * 60 * 24 * 365));
 
   return res.status(200).json({ age: `${age} year(s)` });
 });
