@@ -9,11 +9,11 @@ const port = process.env.PORT || 8080;
 
 //Middle Ware
 const limiter = rateLimit({
-  windowMs: 10000,
+  windowMs: 1000,
   max: 3,
   standardHeaders: true,
   legacyHeaders: false,
-  handler: (_req, res) => res.status(429).send("Rate exceeded"),
+  message: "Rate exceeded",
 });
 
 type RequestQuery = Request<{}, {}, {}, { dob: string }>;
@@ -22,7 +22,7 @@ app.use(limiter).get("/howold", async (req: RequestQuery, res: Response) => {
   //destructures dob form query
   const { dob } = req.query;
 
-  const dobDate = new Date(dob);
+  const dobDate = new Date(parseInt(dob));
   const currentDate = new Date();
   const dobMs = dobDate.getTime(); //date of birth in milliseconds
 
@@ -33,6 +33,9 @@ app.use(limiter).get("/howold", async (req: RequestQuery, res: Response) => {
   if (!dob) {
     return res.status(400).json({ error: "date of birth is required" });
   }
+
+  console.log(dob);
+  console.log(Number.isNaN(dobMs));
 
   //Check if dobMs is a number or if date of birth is greater than current year
   if (Number.isNaN(dobMs) || dobDate > currentDate) {
