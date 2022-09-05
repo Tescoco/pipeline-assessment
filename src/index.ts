@@ -34,9 +34,6 @@ app.use(limiter).get("/howold", async (req: RequestQuery, res: Response) => {
     return res.status(400).json({ error: "date of birth is required" });
   }
 
-  console.log(dob);
-  console.log(Number.isNaN(dobMs));
-
   //Check if dobMs is a number or if date of birth is greater than current year
   if (Number.isNaN(dobMs) || dobDate > currentDate) {
     return res.status(400).json({ error: "Invalid Date" });
