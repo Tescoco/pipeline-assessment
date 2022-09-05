@@ -5,7 +5,7 @@ import rateLimit from "express-rate-limit";
 dotenv.config();
 
 const app: Express = express();
-const port = process.env.PORT || 4001;
+const port = process.env.PORT || 8080;
 
 //Middle Ware
 const limiter = rateLimit({
@@ -27,11 +27,7 @@ app.use(limiter).get("/howold", async (req: RequestQuery, res: Response) => {
   const dobMs = dobDate.getTime(); //date of birth in milliseconds
 
   const currentDateMs = currentDate.getTime();
-  const oneYearMs = 31536000000; //Milliseconds of One Year
-  const oneMonthMs = 2592000000; //Milliseconds of One Month
-
-  //Get difference
-  const ageMs = currentDateMs - dobMs;
+  const ageMs = currentDateMs - dobMs; //Get difference
 
   //If dob is undefined
   if (!dob) {
@@ -43,21 +39,9 @@ app.use(limiter).get("/howold", async (req: RequestQuery, res: Response) => {
     return res.status(400).json({ error: "Invalid Date" });
   }
 
-  // If age is less than a month
-  if (ageMs <= oneMonthMs) {
-    let age = Math.round(ageMs / (1000 * 60 * 60 * 24));
-    return res.status(200).json({ age: `${age} day(s)` });
-  }
-  // If age is less than a year
-  else if (ageMs <= oneYearMs) {
-    let age = Math.round(ageMs / (1000 * 60 * 60 * 24 * 30));
-    return res.status(200).json({ age: `${age} month(s)` });
-  }
-  // Then age is more than 12 months
-  else {
-    let age = Math.round(ageMs / (1000 * 60 * 60 * 24 * 365));
-    return res.status(200).json({ age: `${age} year(s)` });
-  }
+  let age = Math.round(ageMs / (1000 * 60 * 60 * 24 * 365));
+
+  return res.status(200).json({ age: `${age} year(s)` });
 });
 
 app.get("/", (_req: Request, res: Response) => {
