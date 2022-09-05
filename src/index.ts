@@ -39,7 +39,7 @@ app.use(limiter).get("/howold", async (req: RequestQuery, res: Response) => {
 
   //Check if dobMs is a number or if date of birth is greater than current year
   if (Number.isNaN(dobMs) || dobDate > currentDate) {
-    return res.status(400).json({ error: "Invalid Date" });
+    return res.status(429).json({ error: "Invalid Date" });
   }
 
   let age = Math.floor(ageMs / (1000 * 60 * 60 * 24 * 365));
