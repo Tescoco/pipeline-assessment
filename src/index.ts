@@ -22,12 +22,20 @@ app.use(limiter).get("/howold", async (req: RequestQuery, res: Response) => {
   //destructures dob form query
   const { dob } = req.query;
 
-  const dobDate = new Date(parseInt(dob));
-  const currentDate = new Date();
-  const dobMs = dobDate.getTime(); //date of birth in milliseconds
+  let dobDate: Date;
 
-  const currentDateMs = currentDate.getTime();
-  const ageMs = currentDateMs - dobMs; //Get difference
+  // It is in a millisecond format
+  if (dob.length > 10) {
+    dobDate = new Date(parseInt(dob));
+  } else {
+    dobDate = new Date(dob);
+  }
+
+  let currentDate = new Date();
+  let dobMs = dobDate.getTime(); //date of birth in milliseconds
+
+  let currentDateMs = currentDate.getTime();
+  let ageMs = currentDateMs - dobMs; //Get difference
 
   //If dob is undefined
   if (!dob) {
