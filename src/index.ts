@@ -22,6 +22,11 @@ app.use(limiter).get("/howold", async (req: RequestQuery, res: Response) => {
   //destructures dob form query
   const { dob } = req.query;
 
+  //If dob is undefined
+  if (!dob) {
+    return res.status(400).json({ error: "date of birth is required" });
+  }
+
   let dobDate: Date;
 
   // It is in a millisecond format
@@ -36,11 +41,6 @@ app.use(limiter).get("/howold", async (req: RequestQuery, res: Response) => {
 
   let currentDateMs = currentDate.getTime();
   let ageMs = currentDateMs - dobMs; //Get difference
-
-  //If dob is undefined
-  if (!dob) {
-    return res.status(400).json({ error: "date of birth is required" });
-  }
 
   //Check if dobMs is a number or if date of birth is greater than current year
   if (Number.isNaN(dobMs) || dobDate > currentDate) {
